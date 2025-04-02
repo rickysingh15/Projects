@@ -2,11 +2,12 @@
 import Category from "./category";
 
 class Expense {
-    constructor() {
+    constructor(id, category, amount, date, description) {
       this.id = id;
-      this.category = Category;
+      this.category = category;
       this.amount = amount;
       this.date = date;
+      this.description = description;
     }
   }
   
