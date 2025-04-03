@@ -1,6 +1,6 @@
 import 'react-native-get-random-values';
 
-import {View, Text, Button, StyleSheet, TextInput} from 'react-native';
+import {View, Text, Button, StyleSheet, TextInput, Modal} from 'react-native';
 import Colors from '../data/color';
 
 import { useState } from 'react';
@@ -13,6 +13,7 @@ import shortUuid from 'short-uuid';
 import Subtitle from '../components/Subtitle';
 import Expense from '../models/expense';
 import { CATEGORIES } from '../data/dummy-data';
+import AddCategory from './AddCategory';
 
 import DropDownPicker from 'react-native-dropdown-picker';
 
@@ -20,10 +21,13 @@ function AddExpenseScreen()
 {   
 
     const expenses = useSelector( (state) => state.expensesList.expenses);
+    const categories = useSelector( (state) => state.categoriesList.all_categories);
+    const [modalVisible, setModalVisible] = useState(false);
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
     const [value , setValue] = useState(null);
-    const [categories, setCategories] = useState(CATEGORIES);
+
+    // const [categories, setCategories] = useState(CATEGORIES);
     const [openDropDown, setOpenDropDown] = useState(false);
     const dispatch = useDispatch();
 
@@ -96,7 +100,7 @@ function AddExpenseScreen()
                                     items={categories}
                                     setOpen={setOpenDropDown}
                                     setValue={setValue}
-                                    setItems={setCategories}/>
+                                    />
                 </View>
                 <View>
                     <Text>Remarks</Text>
@@ -113,6 +117,12 @@ function AddExpenseScreen()
                 <Button title='Reset'
                         onPress={onResetHandler}/>
             </View>
+            <View>
+                {modalVisible && <AddCategory isVisible={modalVisible}
+                                              setVisible={setModalVisible}/>}
+            </View>
+            <Button title='Add Category'
+                    onPress={() => setModalVisible(true)}/>
         </View>
     );
 }
@@ -124,6 +134,7 @@ const styles =  StyleSheet.create({
     rootContainer:{
         flex: 1,
         alignItems: 'center',
+        padding: 18,
     },
 
     textInputContainer:{

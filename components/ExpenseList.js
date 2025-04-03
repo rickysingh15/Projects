@@ -7,6 +7,7 @@ import ExpenseGridTile from './ExpenseGridTile';
 function ExpenseList({list})
 {
     const navigation = useNavigation();
+
     function renderExpenseGridItem(itemData)
     {
         const item = itemData.item;
