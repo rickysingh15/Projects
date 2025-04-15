@@ -5,6 +5,7 @@ const Colors = {
     tertiary: '#6d4fc2',
     accent: '#c3dae2',
     background: "#a89d9d",
+    main: "#3c0b97",
 };
 
 export default Colors;

@@ -1,5 +1,6 @@
 import {View, Text, Button, StyleSheet, FlatList} from 'react-native';
 
+import ExpenseSummary from '../components/ExpenseSummary';
 import Subtitle from '../components/Subtitle';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -34,15 +35,20 @@ function AllExpenseScreen({navigation, route})
     }
 
     return (
-        <>
-            <Text>Total is {sum}</Text>
+        <View style={styles.container}>
+            <ExpenseSummary type=""
+                            expenses={expenses}
+                            period="Last 7 days"/>
             <ExpenseList list={expenses}/>
-        </>
+        </View>
     );
 }
 
 export default AllExpenseScreen;
 
 const styles =  StyleSheet.create({
-
+    container:{
+        flex: 1,
+        padding: 16,
+    }
 });

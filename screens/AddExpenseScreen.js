@@ -1,6 +1,6 @@
 import 'react-native-get-random-values';
 
-import {View, Text, Button, StyleSheet, TextInput, Modal} from 'react-native';
+import {View, Text, Button, StyleSheet, TextInput, Modal, Alert} from 'react-native';
 import Colors from '../data/color';
 
 import { useState } from 'react';
@@ -48,6 +48,21 @@ function AddExpenseScreen()
         const index = categories.findIndex(cat => cat.id === value);
         console.log("index is ", index);
         console.log("category selected is ", categories[index]);
+
+        if(value === null || description === '' || amount === '')
+        {
+            Alert.alert(
+                'Error: Field Empty',
+                'Please fill in the amount, category, and remark fields.',
+                [
+                  {
+                    text: 'OK',
+                  },
+                ],
+              );
+              return;
+        }
+
         const uuid = shortUuid.generate();
         console.log("uuid is ", uuid);
 
@@ -121,7 +136,8 @@ function AddExpenseScreen()
                 {modalVisible && <AddCategory isVisible={modalVisible}
                                               setVisible={setModalVisible}/>}
             </View>
-            <Button title='Add Category'
+            <Button style={styles.addCategoryButtonContainer}
+                    title='Add Category'
                     onPress={() => setModalVisible(true)}/>
         </View>
     );
@@ -153,6 +169,10 @@ const styles =  StyleSheet.create({
         margin: 8,
         flexDirection: 'row',
         justifyContent: 'space-between'
+    },
+
+    addCategoryButtonContainer:{
+        marginTop: 30
     }
 
 });

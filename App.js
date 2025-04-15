@@ -2,6 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView, Button} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 
+import Colors from './data/color';
+
 import HomeScreen from './screens/HomeScreen';
 import AddExpenseScreen from './screens/AddExpenseScreen';
 import AllExpenseScreen from './screens/AllExpenseScreen';
@@ -22,8 +24,11 @@ const Stack = createNativeStackNavigator();
 function StackNavigator()
 {
 	return (
-		<Stack.Navigator>
-			<Stack.Screen name="All_Expenses"
+		<Stack.Navigator screenOptions={{
+			headerStyle: {backgroundColor: Colors.tertiary},
+			headerTintColor: 'white',
+		}}>
+			<Stack.Screen name="All Expenses"
 						  component={AllExpenseScreen}
 						  options={{
 							headerShown: true,
@@ -42,27 +47,34 @@ export default function App()
 			<StatusBar style="auto"/>
 			<Provider store={store}>
 				<NavigationContainer>
-					<BottomTab.Navigator>
-						<BottomTab.Screen name="Home" 
+					<BottomTab.Navigator screenOptions={
+						{
+							headerStyle: {backgroundColor: Colors.tertiary},
+							headerTintColor: 'white',
+							tabBarStyle: {backgroundColor: Colors.tertiary},
+							tabBarActiveTintColor: 'white',
+						}
+					}>
+						<BottomTab.Screen name="Ledger" 
 										component={HomeScreen}
 										options={{
 											tabBarIcon: (color, size) => 
-												<Ionicons name="home" size={size} color={color} />,
+												<Ionicons name="home" size={size+5} color={color} />,
 										}} />
 						<BottomTab.Screen name="Add Expense" 
 										component={AddExpenseScreen}
 										options={{
 
 											tabBarIcon: (color, size) =>
-												<Ionicons name="add" size={size} color={color}/>,
+												<Ionicons name="add" size={size+5} color={color}/>,
 										}} />
-						<BottomTab.Screen name="All Expenses" 
+						<BottomTab.Screen name="Stack" 
 										component={StackNavigator}
 										options={{
 
 											headerShown: false,
 											tabBarIcon: (color, size) => 
-												<Ionicons name="list" size={size} color={color}/>,
+												<Ionicons name="calendar" size={size+5} color={color}/>,
 										}} />
 					</BottomTab.Navigator>
 				</NavigationContainer>

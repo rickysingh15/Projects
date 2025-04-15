@@ -1,6 +1,6 @@
 import {View, Text, StyleSheet} from 'react-native';
 
-function MealInformation({amount, category, date, textStyle})
+function ExpenseInformation({amount, category, date, textStyle})
 {
     return (
         <View style={styles.details}>
@@ -10,7 +10,7 @@ function MealInformation({amount, category, date, textStyle})
     );
 }
 
-export default MealInformation;
+export default ExpenseInformation;
 
 const styles = StyleSheet.create({
     details:{
