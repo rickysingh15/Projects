@@ -1,14 +1,14 @@
 import {View, Text, StyleSheet, Pressable, Button} from 'react-native';
 
-import { removeExpense } from '../store/redux/expenses';
+import { removeExpense } from '../../store/redux/expenses';
 import { useDispatch } from 'react-redux';
 
-import IconButton from './IconButton';
-import ExpenseInformation from './ExpenseInformation';
+import IconButton from '../IconButton';
+import ExpenseInformation from '../ExpenseInformation';
 
-import { getFormattedDate } from '../utils/date';
+import { getFormattedDate } from '../../utils/date';
 
-import Colors from '../data/color';
+import Colors from '../../data/color';
 
 function ExpenseGridTile({id, category, amount, date, description, onPress})
 {

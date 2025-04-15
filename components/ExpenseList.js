@@ -2,7 +2,7 @@ import {View, Text, StyleSheet, FlatList} from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
-import ExpenseGridTile from './ExpenseGridTile';
+import ExpenseGridTile from './GridTiles/ExpenseGridTile';
 
 function ExpenseList({list})
 {

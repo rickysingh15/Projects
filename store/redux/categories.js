@@ -11,7 +11,9 @@ const categoriesSlice = createSlice({
         },
 
         removeCategory: (state, action) => {
-            state.all_categories.filter( (cat) => cat.id !== action.payload.category.id)
+            console.log("inside removeCategory reducer");
+            state.all_categories = state.all_categories.filter( (cat) => cat.id !== action.payload.id)
+            console.log("new state is ", state.all_categories);
         }
     }
 });
