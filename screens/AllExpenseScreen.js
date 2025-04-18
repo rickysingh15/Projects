@@ -33,16 +33,14 @@ function AllExpenseScreen({navigation, route})
         {
             setFilteredList(ApplyFilters(expenses, period, duration));
         }   
+        else setFilteredList(expenses);
         
     }, [expenses, period, duration, operation]);
 
+    console.log("filtered expenses length are ", filteredList.length);
 
-    if(expenses.length ===0)
-    {
-        return (
-            <View><Subtitle>No expenses yet</Subtitle></View>
-        );
-    }
+
+    
 
     function onSummaryPressHandler()
     {

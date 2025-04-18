@@ -3,7 +3,7 @@ import Colors from '../data/color';
 
 function ExpenseSummary({operation, expenses, period, duration, onPress})
 {
-    let value = -1;
+    let value = 0;
 
     if(operation.toLowerCase() === "average")
     {

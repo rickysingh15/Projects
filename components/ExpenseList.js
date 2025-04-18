@@ -7,7 +7,6 @@ import ExpenseGridTile from './GridTiles/ExpenseGridTile';
 function ExpenseList({list})
 {
     const navigation = useNavigation();
-
     function renderExpenseGridItem(itemData)
     {
         const item = itemData.item;
@@ -18,7 +17,6 @@ function ExpenseList({list})
             date: item.date,
             description: item.description
         }
-
         function ExpenseGridOnPressHandler()
         {
             navigation.navigate('ExpenseDetailOverview', {ExpenseId: itemData.item.id,
@@ -35,8 +33,17 @@ function ExpenseList({list})
         );
     }
 
+    if(list.length === 0)
+    {
+        return (
+            <View style={styles.listContainer}>
+                <Text style={styles.noExpensesText}>No expenses found</Text>
+            </View>
+        );
+    }
+
     return (
-        <View>
+        <View style={styles.listContainer}>
             <FlatList
             data={list}
             renderItem={renderExpenseGridItem}
@@ -49,5 +56,13 @@ function ExpenseList({list})
 export default ExpenseList;
 
 const styles =  StyleSheet.create({
+    listContainer:{
+        marginBottom: 60,
+    },
 
+    noExpensesText:{
+        textAlign: 'center',
+        fontSize: 20,
+        margin: 24,
+    }
 });
