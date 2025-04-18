@@ -1,9 +1,27 @@
 import {View, Text, StyleSheet} from 'react-native';
+
+import {useDispatch} from 'react-redux';
+import { removeExpense } from '../store/redux/expenses';
+import { useNavigation } from '@react-navigation/native';
+
+
 import Subtitle from './Subtitle';
 import Colors from '../data/color';
-function ExpenseDetailCard({category, amount, date, description, cardStyle})
+import IconButton from './IconButton';
+
+function ExpenseDetailCard({id, category, amount, date, description, cardStyle})
 {
     console.log("cardStyle is ", cardStyle);
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
+
+    function onDeleteExpenseHandler()
+    {
+        console.log("Delete pressed for id ", id);
+        dispatch(removeExpense({id: id}));
+        navigation.goBack();
+    }
+
 
     return (
         <View style={styles.rootContainer}>
@@ -12,6 +30,11 @@ function ExpenseDetailCard({category, amount, date, description, cardStyle})
                 <Text style={styles.descriptionContainer}>{category}</Text>
                 <Text style={[styles.amountContainer, cardStyle]}>Rs {amount}</Text>
                 <Text style={styles.dateContainer}>{date}</Text>
+            </View>
+            <View style={styles.buttonContainer}>
+                <IconButton icon="trash"
+                            color={Colors.secondary}
+                            onPress={onDeleteExpenseHandler}/>
             </View>
         </View>
     );
@@ -37,6 +60,13 @@ const styles =  StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
+
+    buttonContainer:{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 28,
+    },  
 
     amountContainer:{
         margin: 12,

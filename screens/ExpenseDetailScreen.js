@@ -10,7 +10,8 @@ function ExpenseDetailScreen({navigation, route})
     const expDescription = route.params.ExpDescription
 
     return (
-        <ExpenseDetailCard category={expCategory.title} 
+        <ExpenseDetailCard id={expId}
+                           category={expCategory.title} 
                            amount={expAmount}
                            date={expDate}
                            description={expDescription}

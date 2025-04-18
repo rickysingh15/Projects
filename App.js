@@ -28,7 +28,7 @@ function StackNavigator()
 			headerStyle: {backgroundColor: Colors.tertiary},
 			headerTintColor: 'white',
 		}}>
-			<Stack.Screen name="All Expenses"
+			<Stack.Screen name="Expenses"
 						  component={AllExpenseScreen}
 						  options={{
 							headerShown: true,
@@ -68,7 +68,7 @@ export default function App()
 											tabBarIcon: (color, size) =>
 												<Ionicons name="add" size={size+5} color={color}/>,
 										}} />
-						<BottomTab.Screen name="Stack" 
+						<BottomTab.Screen name="All Expenses" 
 										component={StackNavigator}
 										options={{
 

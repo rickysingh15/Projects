@@ -4,9 +4,6 @@ import { removeExpense } from '../../store/redux/expenses';
 import { useDispatch } from 'react-redux';
 
 import IconButton from '../IconButton';
-import ExpenseInformation from '../ExpenseInformation';
-
-import { getFormattedDate } from '../../utils/date';
 
 import Colors from '../../data/color';
 
@@ -43,7 +40,7 @@ function ExpenseGridTile({id, category, amount, date, description, onPress})
         //                 onPress={onDeleteHandler}/>
         // </View>
 
-        <Pressable>
+        <Pressable onPress={onPress}>
             <View style={styles.expenseItem}>
                 <View>
                     <Text style={[styles.textBase, styles.description]}>{description}</Text>

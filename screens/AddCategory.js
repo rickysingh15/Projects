@@ -16,7 +16,7 @@ function AddCategory({isVisible, setVisible})
     const [newCategory, setNewCategory] = useState('');
     const categories = useSelector((state) => state.categoriesList.all_categories);
     const dispatch = useDispatch();
-
+ 
     function setCategoryHandler(cat)
     {
         console.log("category is ", cat);

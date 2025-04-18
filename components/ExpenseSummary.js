@@ -1,23 +1,25 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Pressable} from 'react-native';
 import Colors from '../data/color';
 
-function ExpenseSummary({type, expenses, period})
+function ExpenseSummary({operation, expenses, period, duration, onPress})
 {
     let value = -1;
-    if(type === "average")
+
+    if(operation.toLowerCase() === "average")
     {
         let totalCount = expenses.length;
         value = expenses.reduce((acc, curr) => acc + curr.amount, 0) / totalCount;
     }
-    else if(type === "max")
+    else if(operation.toLowerCase() === "max")
     {
         for(let i=0; i<expenses.length; i++)
         {
             value = Math.max(value, expenses[i].amount);   
         }
     }
-    else if(type === "min")
+    else if(operation.toLowerCase() === "min")
     {
+        value = Number.MAX_SAFE_INTEGER;
         for(let i=0; i<expenses.length; i++)
         {
             value = Math.min(value, expenses[i].amount);   
@@ -28,12 +30,25 @@ function ExpenseSummary({type, expenses, period})
         value = expenses.reduce((acc, curr) => acc + curr.amount, 0);
     }
 
+    let filterInfo = (<View style={styles.container}>
+            <Text style={{fontWeight: 'bold', color: Colors.secondary}}>No Filters</Text>
+        </View>);
+
+    if(operation !== "" && duration > 0 && period !== "")
+    {
+        filterInfo = (<View style={styles.container}>
+                <View>
+                    <Text style={styles.value}>{value.toFixed(2)}</Text>
+                    <Text style={styles.operation}>{operation}</Text>
+                </View>
+                <Text style={styles.typeStyle}>Last {duration} {period}</Text>
+            </View>);
+    }
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.value}>{value.toFixed(2)}</Text>
-            <Text style={styles.typeStyle}>{type}</Text>
-            <Text style={styles.period}>{period}</Text>
-        </View>
+        <Pressable onPress={onPress}>
+            {filterInfo}
+        </Pressable>
     );
 }
 
@@ -58,6 +73,16 @@ const styles = StyleSheet.create({
     typeStyle:{
         fontSize: 12,
         color: Colors.secondary,
+    },
+
+    operation:{
+        fontSize: 16,
+        color: Colors.secondary,
+    },
+
+    valueContainer:{
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 
     value:{
