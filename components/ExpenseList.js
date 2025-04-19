@@ -19,12 +19,7 @@ function ExpenseList({list})
         }
         function ExpenseGridOnPressHandler()
         {
-            navigation.navigate('ExpenseDetailOverview', {ExpenseId: itemData.item.id,
-                                                           ExpCategory: itemData.item.category,
-                                                              ExpAmount: itemData.item.amount,
-                                                              ExpDate: itemData.item.date,
-                                                              ExpDescription: itemData.item.description
-            });
+            navigation.navigate('ExpenseDetailOverview', {ExpenseId: itemData.item.id});
         }
 
         return (

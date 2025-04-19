@@ -64,7 +64,7 @@ export default function App()
 						<BottomTab.Screen name="Add Expense" 
 										component={AddExpenseScreen}
 										options={{
-
+											unmountOnBlur: true,
 											tabBarIcon: (color, size) =>
 												<Ionicons name="add" size={size+5} color={color}/>,
 										}} />
