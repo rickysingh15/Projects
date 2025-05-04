@@ -1,8 +1,14 @@
 import {View, Text, Button, StyleSheet, FlatList} from 'react-native';
 
+import { setExpenses } from '../store/redux/expenses';
+import { fetchExpenses } from '../utils/database';
+
 import ExpenseSummary from '../components/ExpenseSummary';
-import Subtitle from '../components/Subtitle';
+import LoadingOverlay from '../components/LoadingOverlay';
+import ErrorOverlay from '../components/ErrorOverlay';
+
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 
 import { ApplyFilters } from '../utils/ApplyFilters';
@@ -12,22 +18,40 @@ import { useSelector } from 'react-redux';
 
 function AllExpenseScreen({navigation, route})
 {
-    const expenses = useSelector(  (state) => state.expensesList.expenses)
-    const [sum , setSum] = useState(0);
+    const expenses = useSelector(  (state) => state.expensesList.expenses);
     const [isFiltersVisible, setIsFiltersVisible] = useState(false);
 
+    const [isFetching, setIsFetching] = useState(true);
     const [period, setPeriod] = useState('');
     const [duration, setDuration] = useState(0);
     const [operation, setOperation] = useState('');
-    const [filteredList, setFilteredList] = useState(expenses);
+    const [filteredList, setFilteredList] = useState([]);
+    const [error, setError] = useState(null);
+    const dispatch = useDispatch();
+
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, 9000));
+
+    useEffect(() => {
+        async function getExpenses()
+        {
+            setIsFetching(true);
+            // await delay(4000);
+            try
+            {
+                const expenses = await fetchExpenses();
+                dispatch(setExpenses(expenses));
+                setFilteredList(expenses);
+            }
+            catch(error){
+                setError(error.message);
+            }
+            setIsFetching(false);
+        }
+        
+        getExpenses();
+    }, []);
 
     useEffect( () => {
-        let total = 0;
-        for(let i=0; i<expenses.length; i++)
-        {
-            total += expenses[i].amount;
-        }
-        setSum(total);
 
         if(period !== '' && duration > 0 && operation !== '')
         {
@@ -39,8 +63,22 @@ function AllExpenseScreen({navigation, route})
 
     console.log("filtered expenses length are ", filteredList.length);
 
+    function errorHandler()
+    {
+        setError(null);
+    }
 
-    
+    if(isFetching)
+    {
+        return <LoadingOverlay message="Loading expenses..."/>;
+    }
+
+    if(error && !isFetching)
+    {
+        return <ErrorOverlay message={error}
+                             onConfirm={errorHandler}/>;
+    }
+
 
     function onSummaryPressHandler()
     {

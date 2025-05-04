@@ -1,27 +1,31 @@
 import {View, Text, StyleSheet} from 'react-native';
 
+import { useState } from 'react';
 import {useDispatch} from 'react-redux';
 import { removeExpense } from '../store/redux/expenses';
 import { useNavigation } from '@react-navigation/native';
 
-
+import LoadingOverlay from './LoadingOverlay';
+import { deleteExpense } from '../utils/database';
 import Subtitle from './Subtitle';
 import Colors from '../data/color';
 import IconButton from './IconButton';
 
-function ExpenseDetailCard({id, category, amount, date, description, cardStyle})
+function ExpenseDetailCard({id, category, amount, date, description, cardStyle, onDelete})
 {
-    console.log("cardStyle is ", cardStyle);
+    console.log("ExpenseDetailCard called with id ", id);
     const dispatch = useDispatch();
     const navigation = useNavigation();
+    const ms = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-    function onDeleteExpenseHandler()
+    async function onDeleteExpenseHandler()
     {
         console.log("Delete pressed for id ", id);
+        onDelete(true);
+        await deleteExpense(id);
         dispatch(removeExpense({id: id}));
         navigation.goBack();
     }
-
 
     return (
         <View style={styles.rootContainer}>

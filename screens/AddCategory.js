@@ -32,8 +32,7 @@ function AddCategory({isVisible, setVisible})
             const uuid = shortUuid.generate();
             dispatch(addCategory({category: {
                 id: uuid.toString(),
-                title: newCategory,
-                color: Colors.tertiary
+                title: newCategory
             }}))
             setVisible(false);
             setNewCategory('');

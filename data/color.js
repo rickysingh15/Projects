@@ -6,6 +6,8 @@ const Colors = {
     accent: '#c3dae2',
     background: "#a89d9d",
     main: "#3c0b97",
+    errorPrimary: '#d65151',
+    errorSecondary: '#eecdcd',
 };
 
 export default Colors;
