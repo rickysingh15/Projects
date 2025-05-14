@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const DB_URL = "https://expense-tracker-aa8b1-default-rtd.firebaseio.com";
+const DB_URL = "https://expense-tracker-aa8b1-default-rtdb.firebaseio.com";
 
 
 export async function storeExpense(expenseData)

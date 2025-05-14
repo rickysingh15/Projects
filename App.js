@@ -8,6 +8,8 @@ import HomeScreen from './screens/HomeScreen';
 import AddExpenseScreen from './screens/AddExpenseScreen';
 import AllExpenseScreen from './screens/AllExpenseScreen';
 import ExpenseDetailScreen from './screens/ExpenseDetailScreen';
+import LoginScreen from './screens/LoginScreen';
+import SignUpScreen from './screens/SignUpScreen';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -21,7 +23,7 @@ const BottomTab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 
-function StackNavigator()
+function AllExpenseStackNavigator()
 {
 	return (
 		<Stack.Navigator screenOptions={{
@@ -37,6 +39,31 @@ function StackNavigator()
 			<Stack.Screen name="ExpenseDetailOverview"
 						  component={ExpenseDetailScreen}/>
 		</Stack.Navigator>
+	);
+}
+
+function HomeScreenStackNavigator()
+{
+	return (
+		<Stack.Navigator>
+			<Stack.Screen name="Home" 
+						  component={HomeScreen}
+						  options={{
+							headerShown: false,
+						  }}/>
+
+			<Stack.Screen name="LoginScreen"
+						  component={LoginScreen}
+						  options={{
+							headerShown: false,
+						  }}/>
+
+			<Stack.Screen name="SignUpScreen"
+						  component={SignUpScreen}
+						  options={{
+							headerShown: false,
+						  }}/>
+		</Stack.Navigator>	
 	);
 }
 
@@ -56,7 +83,7 @@ export default function App()
 						}
 					}>
 						<BottomTab.Screen name="Ledger" 
-										component={HomeScreen}
+										component={HomeScreenStackNavigator}
 										options={{
 											tabBarIcon: (color, size) => 
 												<Ionicons name="home" size={size+5} color={color} />,
@@ -69,7 +96,7 @@ export default function App()
 												<Ionicons name="add" size={size+5} color={color}/>,
 										}} />
 						<BottomTab.Screen name="All Expenses" 
-										component={StackNavigator}
+										component={AllExpenseStackNavigator}
 										options={{
 
 											headerShown: false,
