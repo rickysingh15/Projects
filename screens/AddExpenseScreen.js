@@ -9,7 +9,6 @@ import {useSelector } from 'react-redux';
 import {useDispatch} from 'react-redux';
 
 import { storeExpense, updateExpenseDB } from '../utils/database';
-
 import shortUuid from 'short-uuid';
 
 import Subtitle from '../components/Subtitle';
@@ -23,7 +22,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 function AddExpenseScreen({navigation, route})
 {   
-
+    const token = useSelector(state => state.auth.token);
     const [isUpdating, setIsUpdating] = useState(false);
     const editedExpenseId = route.params?.id;
     const isEditing = useMemo(() => !!editedExpenseId, [editedExpenseId]);
@@ -139,10 +138,10 @@ function AddExpenseScreen({navigation, route})
                 };
 
                 try{
-                    await updateExpenseDB(uuid, exp);
+                    await updateExpenseDB(token, uuid, exp);
                     exp = {...exp, id: uuid};
                     dispatch(updateExpense({expense: exp}));
-                    navigation.navigate('All Expenses');
+                    navigation.navigate('Expenses');
                 }
                 catch(error){
                     setError(error.message);
@@ -164,10 +163,10 @@ function AddExpenseScreen({navigation, route})
 
             
             try{
-                const id = await storeExpense(exp);
+                const id = await storeExpense(token, exp);
                 exp = {...exp, id: id}; // Add the generated ID to the expense object
                 dispatch(addExpense({expense: exp}));
-                navigation.navigate('All Expenses');
+                navigation.navigate('Expenses');
             }
             catch(error){
                 setError(error.message);
@@ -188,7 +187,7 @@ function AddExpenseScreen({navigation, route})
 
     function onCancelHandler()
     {
-        navigation.navigate('All Expenses');
+        navigation.navigate('Expenses');
     }
 
     if(isUpdating)

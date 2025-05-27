@@ -1,4 +1,5 @@
 import {View, Text, Button, StyleSheet, FlatList} from 'react-native';
+import IconButton from '../components/IconButton';
 
 import { setExpenses } from '../store/redux/expenses';
 import { fetchExpenses } from '../utils/database';
@@ -7,7 +8,7 @@ import ExpenseSummary from '../components/ExpenseSummary';
 import LoadingOverlay from '../components/LoadingOverlay';
 import ErrorOverlay from '../components/ErrorOverlay';
 
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 
@@ -18,6 +19,7 @@ import { useSelector } from 'react-redux';
 
 function AllExpenseScreen({navigation, route})
 {
+    const token = useSelector(state => state.auth.token);
     const expenses = useSelector(  (state) => state.expensesList.expenses);
     const [isFiltersVisible, setIsFiltersVisible] = useState(false);
 
@@ -31,6 +33,14 @@ function AllExpenseScreen({navigation, route})
 
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, 9000));
 
+    useLayoutEffect( () => {
+        navigation.setOptions({
+            headerRight: () => {return <IconButton icon="add"
+                                                   color="white" 
+                                                   onPress={() => navigation.navigate('Add Expense')}/>}
+        });
+    }, [navigation]);
+
     useEffect(() => {
         async function getExpenses()
         {
@@ -38,11 +48,12 @@ function AllExpenseScreen({navigation, route})
             // await delay(4000);
             try
             {
-                const expenses = await fetchExpenses();
+                const expenses = await fetchExpenses(token);
                 dispatch(setExpenses(expenses));
                 setFilteredList(expenses);
             }
             catch(error){
+                console.log("Error in fetching expenses: ", error);
                 setError(error.message);
             }
             setIsFetching(false);

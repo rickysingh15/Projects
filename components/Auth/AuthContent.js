@@ -22,11 +22,11 @@ function AuthContent({ isLogin, onAuthenticate })
     {
         if(isLogin)
         {
-            navigation.navigate('SignUpScreen');
+            navigation.navigate('Sign Up');
         }
         else
         {
-            navigation.navigate('LoginScreen');
+            navigation.navigate('Login');
         }
     }
 

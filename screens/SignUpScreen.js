@@ -5,17 +5,24 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 
 import { authenticate } from '../store/redux/auth';
+import { useLayoutEffect } from 'react';
 
 import { createUser } from '../utils/Auth';
 import AuthContent from '../components/Auth/AuthContent';
 import LoadingOverlay from '../components/LoadingOverlay';
 import ErrorOverlay from '../components/ErrorOverlay';
 
-function SignUpScreen()
+function SignUpScreen({navigation, route})
 {   
     const [isCreating, setisCreating] = useState(false);
     const [error, setError] = useState(null);
     const dispatch = useDispatch();
+
+    // useLayoutEffect( () => {
+    //         navigation.setOptions({
+    //             title: 'Become a member',
+    //         });
+    //     }, [navigation]);
 
     async function onAuthenticateHandler({ email, password })
     {   
@@ -23,7 +30,7 @@ function SignUpScreen()
         setisCreating(true);
         try{
             const token = await createUser(email, password);
-            dispatch(authenticate({token: token}));
+            dispatch(authenticate({token: token, email: email}));
         }
         catch (error)
         {

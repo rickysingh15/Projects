@@ -3,16 +3,19 @@ import axios from "axios";
 const DB_URL = "https://expense-tracker-aa8b1-default-rtdb.firebaseio.com";
 
 
-export async function storeExpense(expenseData)
+export async function storeExpense(token, expenseData)
 {
-    const response = await axios.post(DB_URL + "/expenses.json", expenseData);
+    const response = await axios.post(DB_URL + "/expenses.json?auth=" + token, expenseData);
     const id = response.data.name; //firebase generates a unique id for the expense
     return id;
 }
 
-export async function fetchExpenses()
+export async function fetchExpenses(token)
 {
-    const response = await axios.get(DB_URL + "/expenses.json");
+    console.log("fetching expenses with token: ", token);
+    console.log("url is ", DB_URL + "/expenses.json?auth=" + token);
+    const response = await axios.get(DB_URL + "/expenses.json?auth=" + token);
+    console.log("response is ", response.data);
 
     const expenses = [];
 
@@ -31,12 +34,12 @@ export async function fetchExpenses()
     return expenses;
 }
 
-export async function updateExpenseDB(id, expenseData)
+export async function updateExpenseDB(token, id, expenseData)
 {
-    return await axios.put(DB_URL + `/expenses/${id}.json`, expenseData);
+    return await axios.put(DB_URL + `/expenses/${id}.json?auth=${token}`, expenseData);
 }
 
-export async function deleteExpense(id)
+export async function deleteExpense(token, id)
 {
-    return await axios.delete(DB_URL + `/expenses/${id}.json`);
+    return await axios.delete(DB_URL + `/expenses/${id}.json?auth=${token}`);
 }

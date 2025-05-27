@@ -1,7 +1,7 @@
 import {View, Text, StyleSheet} from 'react-native';
 
 import { useState } from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import { removeExpense } from '../store/redux/expenses';
 import { useNavigation } from '@react-navigation/native';
 
@@ -14,6 +14,7 @@ import IconButton from './IconButton';
 function ExpenseDetailCard({id, category, amount, date, description, cardStyle, onDelete})
 {
     console.log("ExpenseDetailCard called with id ", id);
+    const token = useSelector(state => state.auth.token);
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const ms = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -22,7 +23,7 @@ function ExpenseDetailCard({id, category, amount, date, description, cardStyle, 
     {
         console.log("Delete pressed for id ", id);
         onDelete(true);
-        await deleteExpense(id);
+        await deleteExpense(token, id);
         dispatch(removeExpense({id: id}));
         navigation.goBack();
     }

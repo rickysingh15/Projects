@@ -4,10 +4,14 @@ import Colors from '../data/color';
 import CustomButton from '../components/CustomButton';
 function HomeScreen({navigation, route})
 {
-
     function onLoginPressHandler()
     {
-        navigation.navigate('LoginScreen');
+        navigation.navigate('Login');
+    }
+
+    function onSignUpPressHandler()
+    {
+        navigation.navigate('Sign Up');
     }
 
     return (
@@ -16,7 +20,7 @@ function HomeScreen({navigation, route})
             <Text style={styles.text}> To the best ledger in the world</Text>
             <View style={styles.buttonsContainer}>
                 <CustomButton title="Login" onPress={onLoginPressHandler} color={Colors.tertiary}/>
-                <CustomButton title="Sign up" onPress={() => {}} color={Colors.tertiary}/>
+                <CustomButton title="Sign up" onPress={onSignUpPressHandler} color={Colors.tertiary}/>
             </View>
         </View>
     );
