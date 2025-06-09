@@ -2,7 +2,9 @@ import {View, Text, Button, StyleSheet, FlatList} from 'react-native';
 import IconButton from '../components/IconButton';
 
 import { setExpenses } from '../store/redux/expenses';
+import {reauthenticateUser} from '../store/redux/AuthActions';
 import { fetchExpenses } from '../utils/database';
+import { refresh } from '../utils/Auth';
 
 import ExpenseSummary from '../components/ExpenseSummary';
 import LoadingOverlay from '../components/LoadingOverlay';
@@ -20,6 +22,7 @@ import { useSelector } from 'react-redux';
 function AllExpenseScreen({navigation, route})
 {
     const token = useSelector(state => state.auth.token);
+    const refToken = useSelector(state => state.auth.refreshToken);
     const expenses = useSelector(  (state) => state.expensesList.expenses);
     const [isFiltersVisible, setIsFiltersVisible] = useState(false);
 
@@ -52,15 +55,25 @@ function AllExpenseScreen({navigation, route})
                 dispatch(setExpenses(expenses));
                 setFilteredList(expenses);
             }
-            catch(error){
+            catch(error)
+            {
                 console.log("Error in fetching expenses: ", error);
-                setError(error.message);
+                if(error.response.status === 401)
+                {
+                    const {token , refreshToken} = await refresh(refToken);
+                    dispatch(reauthenticateUser(token, refreshToken));
+                }
+                else
+                {
+                    console.log("Error in fetching expenses: ", error);
+                    setError(error.message);
+                }
             }
             setIsFetching(false);
         }
         
         getExpenses();
-    }, []);
+    }, [token, refToken]);
 
     useEffect( () => {
 

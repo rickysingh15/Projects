@@ -43,3 +43,36 @@ export async function deleteExpense(token, id)
 {
     return await axios.delete(DB_URL + `/expenses/${id}.json?auth=${token}`);
 }
+
+export async function storeCategoryDB(token, categoryData)
+{
+    const response = await axios.post(DB_URL + "/categories.json?auth=" + token, categoryData);
+    const id = response.data.name; //firebase generates a unique id for the category
+    return id;
+}
+
+export async function fetchCategoriesDB(token)
+{
+    const response = await axios.get(DB_URL + "/categories.json?auth=" + token);
+    const categories = [];
+
+    for(const key in response.data)
+    {
+        const categoryObj = {
+            id: key,
+            title: response.data[key].title
+        }
+        categories.push(categoryObj);
+    }
+    return categories;
+}
+
+export async function deleteCategoryDB(token, id)
+{
+    return await axios.delete(DB_URL + `/categories/${id}.json?auth=${token}`);
+}
+
+export async function updateCategoryDB(token, id, categoryData)
+{
+    return await axios.put(DB_URL + `/categories/${id}.json?auth=${token}`, categoryData);
+}

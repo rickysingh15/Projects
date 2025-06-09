@@ -29,8 +29,8 @@ function SignUpScreen({navigation, route})
         console.log("onAuth called")
         setisCreating(true);
         try{
-            const token = await createUser(email, password);
-            dispatch(authenticate({token: token, email: email}));
+            const {token, refreshToken} = await createUser(email, password);
+            dispatch(authenticate({token: token, email: email, refreshToken: refreshToken}));
         }
         catch (error)
         {

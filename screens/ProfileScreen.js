@@ -21,7 +21,7 @@ function ProfileScreen({navigation, route})
             console.log(response.data);
             setFetchedMessage(response.data);
         });
-    }, []);
+    }, [token]);
 
     useLayoutEffect( () => {
         navigation.setOptions({

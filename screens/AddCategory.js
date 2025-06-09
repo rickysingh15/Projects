@@ -5,15 +5,23 @@ import { useState } from 'react';
 import shortUuid from 'short-uuid';
 
 import Subtitle from '../components/Subtitle';
+import ErrorOverlay from '../components/ErrorOverlay';
+import LoadingOverlay from '../components/LoadingOverlay';
 import Colors from '../data/color';
 import { useDispatch } from 'react-redux';
 import { addCategory, removeCategory } from '../store/redux/categories';
+import { storeCategoryDB, deleteCategoryDB } from '../utils/database';
+
 
 import CategoryList from '../components/CategoryList';
 
 function AddCategory({isVisible, setVisible})
-{
+{   
+    const token = useSelector((state) => state.auth.token);
+    const refToken = useSelector((state) => state.auth.refreshToken);
     const [newCategory, setNewCategory] = useState('');
+    const [error, setError] = useState(null);
+    const [isUpdating, setIsUpdating] = useState(false);
     const categories = useSelector((state) => state.categoriesList.all_categories);
     const dispatch = useDispatch();
  
@@ -23,19 +31,42 @@ function AddCategory({isVisible, setVisible})
         setNewCategory(cat);
     }
 
-    function onAddHandler()
+    async function onAddHandler()
     {
         const index = categories.findIndex((cat) => cat.title.toLowerCase() === newCategory.toLowerCase());
-
+        
         if(index === -1)
         {   
-            const uuid = shortUuid.generate();
-            dispatch(addCategory({category: {
-                id: uuid.toString(),
-                title: newCategory
-            }}))
-            setVisible(false);
-            setNewCategory('');
+            // const uuid = shortUuid.generate();
+            setIsUpdating(true);
+            try{
+
+                const id = await storeCategoryDB(token, {title: newCategory});
+                dispatch(addCategory({category: {
+                    id: id,
+                    title: newCategory
+                }}));
+            }
+            catch(error)
+            {
+                if(error.response.status === 401)
+                {
+                    const {newIdToken, newRefreshToken} = await refresh(refToken);
+                    dispatch(reauthenticateUser(newIdToken, newRefreshToken));
+                }
+                else
+                {
+                    console.log("error is ", error);
+                    setError(error.message);
+                }
+            }
+            finally
+            {
+                setIsUpdating(false);
+                setVisible(false);
+                setNewCategory('');
+            }
+            
         }
         else{
             Alert.alert('Category Already Exists', 'Enter a new category', [
@@ -53,6 +84,16 @@ function AddCategory({isVisible, setVisible})
     function onResetHandler()
     {
         setNewCategory('');
+    }
+
+    if(isUpdating)
+    {
+        return <LoadingOverlay message='Adding Category...'/>
+    }
+
+    if(error)
+    {
+        return <ErrorOverlay message={error} onConfirm={() => setError(null)}/>
     }
 
     return (

@@ -6,7 +6,6 @@ import LoadingOverlay from "../LoadingOverlay";
 const AuthStartup = ({isTryingAutoLogin, setIsTryingAutoLogin}) => 
 {
   const dispatch = useDispatch();
-  // const [isTryingLogin, setIsTryingLogin] = useState(true);
 
   useEffect(() => {
 

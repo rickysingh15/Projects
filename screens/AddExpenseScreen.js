@@ -5,11 +5,14 @@ import Colors from '../data/color';
 
 import { useEffect, useMemo, useLayoutEffect, useState } from 'react';
 import {addExpense, updateExpense} from '../store/redux/expenses';
+import {setCategories} from '../store/redux/categories';
 import {useSelector } from 'react-redux';
 import {useDispatch} from 'react-redux';
 
-import { storeExpense, updateExpenseDB } from '../utils/database';
-import shortUuid from 'short-uuid';
+import { storeExpense, updateExpenseDB, fetchCategoriesDB } from '../utils/database';
+import { setExpenses } from '../store/redux/expenses';
+import { refresh } from '../utils/Auth';
+import { reauthenticateUser } from '../store/redux/AuthActions';
 
 import Subtitle from '../components/Subtitle';
 import AddCategory from './AddCategory';
@@ -23,11 +26,14 @@ import DropDownPicker from 'react-native-dropdown-picker';
 function AddExpenseScreen({navigation, route})
 {   
     const token = useSelector(state => state.auth.token);
+    const refToken = useSelector(state => state.auth.refreshToken);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [isSettingUp, setIsSettingUp] = useState(false);
     const editedExpenseId = route.params?.id;
     const isEditing = useMemo(() => !!editedExpenseId, [editedExpenseId]);
     const expenses = useSelector( (state) => state.expensesList.expenses);
 
+    // const [categoriesm]
     const categories = useSelector( (state) => state.categoriesList.all_categories);
     const [modalVisible, setModalVisible] = useState(false);
     const [value , setValue] = useState(null);
@@ -47,6 +53,36 @@ function AddExpenseScreen({navigation, route})
         });
         return unsubscribe;
       }, [navigation]);
+
+
+    useEffect(() => {
+        async function getCategories()
+        {
+            setIsSettingUp(true);
+            try{
+                const updated_categories = await fetchCategoriesDB(token);
+                console.log("Categories fetched: ", updated_categories);
+                dispatch(setCategories({categories: updated_categories}));
+            }
+            catch(error)
+            {
+                console.log("Error in fetching categories: ", error);
+                if(error.response.status === 401)
+                {
+                    const {token , refreshToken} = await refresh(refToken);
+                    dispatch(reauthenticateUser(token, refreshToken));
+                }
+                else{
+                    setError(error.message);
+                }
+            }
+            finally
+            {
+                setIsSettingUp(false);
+            }
+        }
+        getCategories();
+    }, [ token]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -101,8 +137,7 @@ function AddExpenseScreen({navigation, route})
 
         const serializedCat = {
             id: categories[index].id,
-            title: categories[index].title,
-            color: categories[index].color
+            title: categories[index].title
         }
 
         let uuid = null;
@@ -144,15 +179,23 @@ function AddExpenseScreen({navigation, route})
                     navigation.navigate('Expenses');
                 }
                 catch(error){
-                    setError(error.message);
+                    if(error.response.status === 401)
+                    {
+                        const {newIdToken, newRefreshToken} = await refresh(refToken);
+                        dispatch(reauthenticateUser(newIdToken, newRefreshToken));
+                    }
+                    else setError(error.message);
+                }
+                finally
+                {
                     setIsUpdating(false);
                 }
             }
         }
         else
         {
-            uuid = shortUuid.generate();  //not used instead using Firebases unique id
-            console.log("uuid is ", uuid); 
+            // uuid = shortUuid.generate();  //not used instead using Firebases unique id
+            // console.log("uuid is ", uuid); 
             // const exp = new Expense(uuid.toString(), serializedCat.id, parseFloat(amount), new Date().toISOString(), description);
             exp = {
                 category: serializedCat,
@@ -168,8 +211,20 @@ function AddExpenseScreen({navigation, route})
                 dispatch(addExpense({expense: exp}));
                 navigation.navigate('Expenses');
             }
-            catch(error){
-                setError(error.message);
+            catch(error)
+            {
+                if(error.response.status === 401)
+                {
+                    const {newIdToken, newRefreshToken} = await refresh(refToken);
+                    dispatch(reauthenticateUser(newIdToken, newRefreshToken));
+                }
+                else
+                {
+                    setError(error.message);
+                }
+            }
+            finally
+            {
                 setIsUpdating(false);
             }
         }
@@ -190,12 +245,12 @@ function AddExpenseScreen({navigation, route})
         navigation.navigate('Expenses');
     }
 
-    if(isUpdating)
+    if(isUpdating || isSettingUp)
     {
-        return <LoadingOverlay message='Updating Expense...'/>
+        return <LoadingOverlay message='Saving...'/>
     }
 
-    if(error && !isUpdating)
+    if(error && !isUpdating && !isSettingUp)
     {
         return <ErrorOverlay message={error} onConfirm={() => setError(null)}/>
     }

@@ -29,8 +29,8 @@ function LoginScreen({navigation, route})
         console.log("onAuth called")
         setisLogging(true);
         try{
-            const token = await login(email, password);
-            dispatch(loginUser(token, email));
+            const {token, refreshToken} = await login(email, password);
+            dispatch(loginUser(token, email, refreshToken));
         }
         catch (error)
         {
